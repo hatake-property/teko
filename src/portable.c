@@ -12,6 +12,9 @@
 #	err it is an operating system that is not supported
 #endif
 
+int backcolor;
+int forecolor;
+
 void canonical(void){
 #if SYSTEM == SYSTEM_WINDOWS
 	HANDLE terminal = GetStdHandle(STD_INPUT_HANDLE);
@@ -53,8 +56,27 @@ void clear(void){
 void resetcolor(void){
 #if SYSTEM == SYSTEM_WINDOWS
 	HANDLE terminal = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(terminal, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+	backcolor = 0;
+	forecolor = FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED;
+	SetConsoleTextAttribute(terminal, backcolor | forecolor);
 #elif SYSTEM == SYSTEM_UNIX
-	printf("\e[%dm\e[%dm", 40, 37);
+	backcolor = 40;
+	forecolor = 37;
+	printf("\e[%dm\e[%dm", backcolor, forecolor);
+#endif
+}
+
+void invertcolor(void){
+#if SYSTEM == SYSTEM_WINDOWS
+	int num = backcolor;
+	backcolor = forecolor * 0x10;
+	forecolor = num / 0x10;
+	HANDLE terminal = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(terminal, forecolor | backcolor);
+#elif SYSTEM == SYSTEM_UNIX
+	int num = backcolor;
+	backcolor = 40 + forecolor % 10;
+	forecolor = 30 + num % 10;
+	printf("\e[%dm\e[%dm", backcolor, forecolor);
 #endif
 }
