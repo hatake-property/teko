@@ -49,3 +49,12 @@ void clear(void){
 	system("clear");
 #endif
 }
+
+void resetcolor(void){
+#if SYSTEM == SYSTEM_WINDOWS
+	HANDLE terminal = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(terminal, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+#elif SYSTEM == SYSTEM_UNIX
+	printf("\e[%dm\e[%dm", 40, 37);
+#endif
+}
