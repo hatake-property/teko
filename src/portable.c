@@ -3,8 +3,10 @@
 #include "setting.h"
 
 #if SYSTEM == SYSTEM_WINDOWS
+#	include <stdlib.h>
 #	include <windows.h>
 #elif SYSTEM == SYSTEM_UNIX
+#	include <stdlib.h>
 #	include <termios.h>
 #else
 #	err it is an operating system that is not supported
@@ -37,5 +39,13 @@ void noncanonical(void){
 	tcgetattr(STDIN_FILENO, &tio);
 	tio.c_lflag &= ~(ICANON | ECHO);
 	tcsetattr(STDIN_FILENO, TCSANOW, &tio);
+#endif
+}
+
+void clear(void){
+#if SYSTEM == SYSTEM_WINDOWS
+	system("cls");
+#elif SYSTEM == SYSTEM_UNIX
+	system("clear");
 #endif
 }
