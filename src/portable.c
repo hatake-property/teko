@@ -1,21 +1,23 @@
 #include "portable.h"
 
-#if defined(_WIN32) || defined(_WIN64)
+#include "setting.h"
+
+#if SYSTEM == SYSTEM_WINDOWS
 #	include <windows.h>
-#elif defined(__linux__) || (defined(__APPLE__) && defined(__MACH))
+#elif SYSTEM == SYSTEM_UNIX
 #	include <termios.h>
 #else
 #	err it is an operating system that is not supported
 #endif
 
 void canonical(void){
-#if defined(_WIN32) || defined(_WIN64)
+#if SYSTEM == SYSTEM_WINDOWS
 	HANDLE terminal = GetStdHandle(STD_INPUT_HANDLE);
 	DWORD mode;
 	GetConsoleMode(terminal, &mode);
 	mode |= (ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
 	SetConsoleMode(terminal, mode);
-#elif defined(__linux__) || (defined(__APPLE__) && defined(__MACH))
+#elif SYSTEM == SYSTEM_UNIX
 	struct termios tio;
 	tcgetattr(STDIN_FILENO, &tio);
 	tio.c_lflag |= (ICANON | ECHO);
@@ -24,13 +26,13 @@ void canonical(void){
 }
 
 void noncanonical(void){
-#if defined(_WIN32) || defined(_WIN64)
+#if SYSTEM == SYSTEM_WINDOWS
 	HANDLE terminal = GetStdHandle(STD_INPUT_HANDLE);
 	DWORD mode;
 	GetConsoleMode(terminal, &mode);
 	mode &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
 	SetConsoleMode(terminal, mode);
-#elif defined(__linux__) || (defined(__APPLE__) && defined(__MACH))
+#elif SYSTEM == SYSTEM_UNIX
 	struct termios tio;
 	tcgetattr(STDIN_FILENO, &tio);
 	tio.c_lflag &= ~(ICANON | ECHO);
