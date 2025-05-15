@@ -3,5 +3,6 @@
 
 void canonical(void);
 void noncanonical(void);
+void clear(void);
 
 #endif
