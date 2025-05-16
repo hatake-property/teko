@@ -9,6 +9,7 @@ typedef struct{
 	struct{int x, int y} topleft;
 }fileinfo;
 
-void fileopen(fileinfo *file, char *path);
+void openfile(fileinfo *file, char *path);
+void closefile(fileinfo *file);
 
 #endif
