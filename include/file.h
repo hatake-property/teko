@@ -8,4 +8,6 @@ typedef struct{
 	struct{int x, int y} topleft;
 }fileinfo;
 
+void fileopen(fileinfo *file, char *path);
+
 #endif
