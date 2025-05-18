@@ -3,7 +3,7 @@
 
 typedef struct{
 	char path[1024];
-	char (*)content[0x10000];
+	char *content;
 	int contentsize;
 	struct{int x, int y} cursor;
 	struct{int x, int y} topleft;
