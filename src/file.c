@@ -9,8 +9,8 @@ void openfile(fileinfo *file, char *path){
 
 	fp = fopen(path, "r");
 	strcpy(file->path, path);
-	file->content = malloc(sizeof(char[0x10000]) * 1);
-	file->contentsize = 1;
+	file->content = malloc(sizeof(char) * 0x100);
+	file->contentsize = 0x100;
 	file->cursor.x = 0;
 	file->cursor.y = 0;
 	file->topleft.x = 0;
@@ -23,19 +23,31 @@ void openfile(fileinfo *file, char *path){
 
 	if(!fp)
 	{
+		file->content[0] = '\0';
 		return;
 	}
-	while(fgets(file->content[file->contentsize - 1], 0x10000, fp) != NULL)
+	for(int i = 0; ; i ++)
 	{
-		file->contentsize ++;
-		void *p = realloc(file->content, sizeof(char[0x10000]) * file->contentsize);
-		if(!p)
-		{
-			printf("insufficient memory: %dth line memory\n", file->contentsize);
-			free(file->content);
-			exit(EXIT_FAILURE);
+		int c = fgetc(fp);
+		if(i >= file->contentsize){
+			void *p = realloc(file->content, sizeof(char) * (file->contentsize + 0x100));
+			file->contentsize += 0x100;
+			if(!p)
+			{
+				free(file->content);
+				printf("insufficient memory: 0x%x byte memory", file->content);
+				exit(EXIT_FAILURE);
+			}
+			if(c == EOF)
+			{
+				file->contentsize[i] = '\0';
+				break;
+			}
+			else
+			{
+				file->contentsize[i] = c;
+			}
 		}
-		file->content = p;
 	}
 	return;
 }
