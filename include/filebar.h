@@ -1,6 +1,7 @@
 #ifndef TEKO_FILEBAR
 #	define TEKO_FILEBAR
+#	include "file.h"
 
-void printfilebar(void);
+void printfilebar(fileinfo *file);
 
 #endif
