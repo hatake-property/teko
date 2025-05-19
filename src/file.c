@@ -51,3 +51,11 @@ void openfile(fileinfo *file, char *path){
 	}
 	return;
 }
+
+void closefile(fileinfo *file){
+	FILE *fp = fopen(file->path, "w");
+	fputs(file->content, fp);
+	fclose(fp);
+	free(file->content);
+	return;
+}
