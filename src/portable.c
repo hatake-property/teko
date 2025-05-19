@@ -7,7 +7,9 @@
 #	include <windows.h>
 #elif SYSTEM == SYSTEM_UNIX
 #	include <stdlib.h>
+#	include <sys/ioctl.h>
 #	include <termios.h>
+#	include <unistd.h>
 #else
 #	err it is an operating system that is not supported
 #endif
@@ -78,5 +80,19 @@ void invertcolor(void){
 	backcolor = 40 + forecolor % 10;
 	forecolor = 30 + num % 10;
 	printf("\e[%dm\e[%dm", backcolor, forecolor);
+#endif
+}
+
+void gettermsize(int *x, int *y){
+#if SYSTEM == SYSTEM_WINDOWS
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+	x = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+	y = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+#elif SYSTEM == SYSTEM_UNIX
+	struct winsize w;
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+	x = w.ws_col;
+	y = w.ws_row;
 #endif
 }
